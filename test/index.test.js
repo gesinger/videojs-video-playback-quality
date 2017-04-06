@@ -39,22 +39,50 @@ QUnit.module('videojs-video-playback-quality', {
   }
 });
 
-QUnit.test('registers itself with video.js', function(assert) {
-  assert.expect(2);
-
+QUnit.test('plugin is registered and adds getVideoPlaybackQuality API', function(assert) {
   assert.strictEqual(
     typeof Player.prototype.videoPlaybackQuality,
     'function',
     'videojs-video-playback-quality plugin was registered'
   );
 
-  this.player.videoPlaybackQuality();
+  assert.notOk(this.player.getVideoPlaybackQuality,
+               'no API before plugin is initialized');
 
-  // Tick the clock forward enough to trigger the player to be "ready".
+  this.player.videoPlaybackQuality();
   this.clock.tick(1);
 
-  assert.ok(
-    this.player.hasClass('vjs-video-playback-quality'),
-    'the plugin adds a class to the player'
-  );
+  assert.ok(this.player.getVideoPlaybackQuality, 'API set after plugin is initialized');
+});
+
+QUnit.test('can get dropped and total video frames', function(assert) {
+  this.player.videoPlaybackQuality();
+  this.clock.tick(1);
+
+  const videoPlaybackQuality = this.player.getVideoPlaybackQuality();
+
+  assert.equal(typeof videoPlaybackQuality,
+               'object',
+               'getVideoPlaybackQuality returns an object');
+  assert.equal(typeof videoPlaybackQuality.droppedVideoFrames,
+               'number',
+               'droppedVideoFrames is a number');
+  assert.equal(typeof videoPlaybackQuality.totalVideoFrames,
+               'number',
+               'totalVideoFrames is a number');
+});
+
+QUnit.test('calls tech method for flash', function(assert) {
+  this.player.videoPlaybackQuality();
+  this.clock.tick(1);
+
+  const flashResult = { test: 'test' };
+
+  // mock flash tech and response
+  this.player.techName_ = 'Flash';
+  this.player.tech_.getVideoPlaybackQuality = () => flashResult;
+
+  const videoPlaybackQuality = this.player.getVideoPlaybackQuality();
+
+  assert.equal(videoPlaybackQuality, flashResult, 'called the tech\'s method');
 });

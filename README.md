@@ -59,6 +59,16 @@ require(['video.js', 'videojs-video-playback-quality'], function(videojs) {
 });
 ```
 
+## The API
+
+Once the plugin is initialized, the `getVideoPlaybackQuality` function will be added to the player:
+
+```js
+const videoPlaybackQuality = player.getVideoPlaybackQuality();
+```
+
+The API acts as a polyfill for https://w3c.github.io/media-source/#VideoPlaybackQuality. However, not all browsers have all of the information provided by VideoPlaybackQuality. As such, as much information is provided in the VideoPlaybackQuality object as the browser allows. For most browsers, `droppedVideoFrames` and `totalVideoFrames` are provided.
+
 ## License
 
 Apache-2.0. Copyright (c) Brightcove, Inc.

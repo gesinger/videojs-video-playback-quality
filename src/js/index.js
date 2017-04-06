@@ -6,6 +6,30 @@ const defaults = {};
 // Cross-compatibility for Video.js 5 and 6.
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
 
+const getVideoPlaybackQuality = (player) => {
+  if (player.techName_ === 'Flash') {
+    return player.tech_.getVideoPlaybackQuality();
+  }
+
+  const el = player.tech_.el();
+
+  // Native API: Firefox, EDGE, and some IE as of this comment
+  if (typeof el.getVideoPlaybackQuality === 'function') {
+    return el.getVideoPlaybackQuality();
+  }
+
+  if (typeof el.webkitDroppedFrameCount !== 'undefined' &&
+      typeof el.webkitDecodedFrameCount !== 'undefined') {
+    return {
+      droppedVideoFrames: el.webkitDroppedFrameCount,
+      totalVideoFrames: el.webkitDecodedFrameCount
+    };
+  }
+
+  // no supported API
+  return {};
+};
+
 /**
  * Function to invoke when the player is ready.
  *
@@ -20,6 +44,7 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin;
  *           An object of options left to the plugin author to define.
  */
 const onPlayerReady = (player, options) => {
+  player.getVideoPlaybackQuality = getVideoPlaybackQuality.bind(null, player);
 };
 
 /**
