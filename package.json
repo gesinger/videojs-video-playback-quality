@@ -36,10 +36,8 @@
     "CONTRIBUTING.md",
     "README.md",
     "dist/browser",
-    "dist/docs",
     "dist/es5",
     "dist/lang",
-    "docs/",
     "index.html",
     "src/"
   ],

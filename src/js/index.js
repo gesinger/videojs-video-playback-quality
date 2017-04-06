@@ -5,7 +5,6 @@ const defaults = {};
 
 // Cross-compatibility for Video.js 5 and 6.
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
-// const dom = videojs.dom || videojs;
 
 /**
  * Function to invoke when the player is ready.
@@ -21,7 +20,6 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin;
  *           An object of options left to the plugin author to define.
  */
 const onPlayerReady = (player, options) => {
-  player.addClass('vjs-video-playback-quality');
 };
 
 /**
